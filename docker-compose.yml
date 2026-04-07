@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: smartlogistics-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: smartlogistics
+      MYSQL_USER: smartuser
+      MYSQL_PASSWORD: smartpass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: smartlogistics-app
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: smartlogistics
+      DB_USER: smartuser
+      DB_PASSWORD: smartpass
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
